@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "noImplicitAny": true,
+        "module": "es2022",
+        "target": "es6",
+        "jsx": "react",
+        "moduleResolution": "node",
+        "removeComments": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "declaration": true,
+        "declarationDir": "./dist/types",
+        "strictPropertyInitialization": false,
+        "lib": ["esnext", "DOM", "dom.iterable"],
+        "types": ["@vitest/browser/matchers"]
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}
