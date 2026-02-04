@@ -463,7 +463,7 @@ const STATIC_CSS = `
     #chart {overflow: visible;}
     .grid {z-index: -1;pointer-events:none;display: block;position: absolute;top: 0;left: 0;}
     [data-series]{transition:all 200ms ease-in;}
-    :host:has([data-series]:hover) [data-series]:not(:hover){filter: grayscale(90%);opacity:0.2;}
+    :host:has([data-series]:hover) [data-series]:not(:hover) > rect {fill: currentColor;opacity:0.5;}
     [data-series] rect{transition:all 200ms ease-in;}
     :host:has([data-stack-part] rect:hover) [data-stack-part]:not(:hover) rect{fill-opacity:0.2;}
     .c {display: grid;align-content: center;justify-items: center;position: relative;}
@@ -532,7 +532,7 @@ export const getCartesian = (): any => {
             return this.root.querySelector('#tooltip') as HTMLDialogElement;
         }
 
-        get axis() {
+        get axisVal() {
             if (this.getAttribute('axis') === 'y') return 'y';
             return 'x';
         }
@@ -542,7 +542,7 @@ export const getCartesian = (): any => {
             const right = this.shadowRoot?.querySelector('.r') as HTMLDivElement;
             const bottom = this.shadowRoot?.querySelector('.b') as HTMLDivElement;
             const top = this.shadowRoot?.querySelector('.t') as HTMLDivElement;
-            if (this.axis === 'y') return {
+            if (this.axisVal === 'y') return {
                 vals: bottom,
                 vals_: top,
                 keys: left,
@@ -559,7 +559,7 @@ export const getCartesian = (): any => {
         /**
          * Get chart config
          */
-        get config(): TCartesianChartParams<TSeries> {
+        get configVal(): TCartesianChartParams<TSeries> {
             return this._config;
         }
 
@@ -570,13 +570,14 @@ export const getCartesian = (): any => {
         /**
          * Set chart config
          */
-        set config(value: TCartesianChartParams<TSeries>) {
+        set configVal(value: TCartesianChartParams<TSeries>) {
+            if (!this.isConnected) return;
             this._config = {
                 ...DEF_CONFIG,
                 ...value,
                 data: this.formatData(value.data)
             };
-            const axis = this.axis;
+            const axis = this.axisVal;
             const viewBox = this.viewBox;
             this._extra = getCartesianExtraConfig({
                 config: this._config,
@@ -596,7 +597,7 @@ export const getCartesian = (): any => {
             value: Record<string, any>;
             activeSeries: string;
         }): string {
-            const { series } = this.config;
+            const { series } = this.configVal;
             const keys = activeSeries ? [activeSeries] : Object.keys(series);
             return `<div style="padding: 0.5rem;display:flex;flex-direction:column;gap: 0.5rem;">${keys.reduce((
                 acc, seriesKey
@@ -625,10 +626,10 @@ export const getCartesian = (): any => {
             y: number;
         }): number {
             const rect = this.svg.getBoundingClientRect();
-            const count = this.config.data.length - 1;
+            const count = this.configVal.data.length - 1;
             let index = -1;
             if (count >= 0) {
-                if (this.axis === 'y') {
+                if (this.axisVal === 'y') {
                     const step = rect.height / count;
                     const ind = (y - rect.top + 0.5 * step) / step;
                     index = count - Math.floor(ind);
@@ -677,14 +678,14 @@ export const getCartesian = (): any => {
             const {
                 keys, vals
             } = this.extra;
-            const labels = this.config.labels;
+            const labels = this.configVal.labels;
             if (!labels) {
                 return {
                     keys: '',
                     vals: ''
                 };
             }
-            const axis = this.axis;
+            const axis = this.axisVal;
             let keysHTML = '';
             let valsHTML = '';
             if (axis === 'y') {
@@ -702,8 +703,8 @@ export const getCartesian = (): any => {
 
         getGridSVG() {
             const prep = this.extra;
-            const grid = this.config.grid;
-            const axis = this.axis;
+            const grid = this.configVal.grid;
+            const axis = this.axisVal;
             if (!grid) return '';
             return getGridSVG({
                 keys: prep.keys, vals: prep.vals,
@@ -752,7 +753,7 @@ export const getCartesian = (): any => {
                     `@scope (#tooltip) {:scope{transition-property:transform;transition-duration:200ms;transition-timing-function:linear;transition-delay:0ms;` +
                     `pointer-events:none;position: absolute;box-shadow: 0 0 0.5rem currentColor;` +
                     `width:max-content;margin:0;padding:0;border:0px;border-radius: 0.5rem;color: currentColor;` +
-                    `background:oklch(from light-dark(white, grey) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
+                    `background:oklch(from light-dark(white, #161618) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
                     styles.tooltip +
                     `}` +
                     `@scope (#highlight) {[data-index] {fill: transparent;stroke: none;z-index: 100;}` +
@@ -768,8 +769,8 @@ export const getCartesian = (): any => {
 
         render() {
             if (!this.isConnected || !this.svg) return;
-            const axis = this.axis;
-            const config = this.config;
+            const axis = this.axisVal;
+            const config = this.configVal;
             const extra = this.extra;
             const styles = {
                 highlight: '',
@@ -816,7 +817,7 @@ export const getCartesian = (): any => {
             const attr = this.getAttribute('config');
             const configVal = attr ? JSON.parse(decodeURIComponent(attr)) : {};
             this.setLayout();
-            this.config = configVal;
+            this.configVal = configVal;
             this.render();
             
             const tooltipOff = tooltipOn(this)
@@ -838,7 +839,7 @@ export const getCartesian = (): any => {
                 case 'config':
                     const attr = this.getAttribute('config');
                     const configVal = attr ? JSON.parse(decodeURIComponent(attr)) : {};
-                    this.config = configVal;
+                    this.configVal = configVal;
                     this.render();
                     break;
             }

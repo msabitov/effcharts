@@ -159,11 +159,11 @@ function makeLinePath({
             let limX = viewBox.maxX;
             if (area) {
                 if (axis === 'y') {
-                    if (area?.towards === 'min') limX = viewBox.maxX;
+                    if (area?.towards === 'max') limX = viewBox.maxX;
                     else if (area?.towards === 'zero') limX = zero;
                     else limX = 0;
                 } else {
-                    if (area?.towards === 'min') limY = 0;
+                    if (area?.towards === 'max') limY = 0;
                     else if (area?.towards === 'zero') limY = zero;
                     else limY = viewBox.maxY;
                 }
@@ -227,13 +227,17 @@ export const useLine: TUseLine = () => {
         custom.define(TAGNAME, class Line extends Cartesian<TLineChartSeries> {
             getDataSVG() {
                 const extra = this.extra;
-                const config = this.config;
+                const config = this.configVal;
                 return makeLinePath({
                     config,
                     extra,
                     viewBox: this.viewBox,
-                    axis: this.axis
+                    axis: this.axisVal
                 });
+            }
+
+            getActiveSeries(): string {
+                return '';
             }
 
             getDataCSS() {

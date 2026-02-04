@@ -9,12 +9,12 @@
 <div align="center">
 
 [![license](https://badgen.net/static/license/Apache%202.0/blue)](https://gitverse.ru/msabitov/effcharts/content/master/LICENSE)
-[![npm latest package](https://badgen.net/npm/v/effsz)](https://www.npmjs.com/package/effcharts)
+[![npm latest package](https://badgen.net/npm/v/effcharts)](https://www.npmjs.com/package/effcharts)
 ![install size](https://badgen.net/packagephobia/install/effcharts)
 
 </div>
 
-EffCharts is a simple 2D charts library based on Web Components
+EffCharts is a self-confident 2D charts library based on Web Components
 
 ## Some features
 
@@ -24,6 +24,7 @@ EffCharts is a simple 2D charts library based on Web Components
 
 ## Links
 
+-   [Docs](https://effnd.tech/charts/)
 -   [SourceCraft](https://sourcecraft.dev/msabitov/effcharts)
 -   [GitHub](https://github.com/msabitov/effcharts)
 

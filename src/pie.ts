@@ -174,12 +174,12 @@ export const usePie: TUsePie = () => {
         custom.define(TAGNAME, class Pie extends Polar<TPieChartSeries> {
             getDataSVG() {
                 const extra = this.extra;
-                const config = this.config;
+                const config = this.configVal;
                 return makePiePath({
                     config,
                     extra,
                     viewBox: this.viewBox,
-                    axis: this.axis
+                    axis: this.axisVal
                 });
             }
         } as unknown as CustomElementConstructor)

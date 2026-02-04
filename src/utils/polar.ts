@@ -91,7 +91,7 @@ export const getPolar = (): any => {
             return this.root.querySelector('#tooltip') as HTMLDialogElement;
         }
 
-        get axis() {
+        get axisVal() {
             if (this.getAttribute('axis') === 'y') return 'y';
             return 'x';
         }
@@ -101,7 +101,7 @@ export const getPolar = (): any => {
             const right = this.shadowRoot?.querySelector('.r') as HTMLDivElement;
             const bottom = this.shadowRoot?.querySelector('.b') as HTMLDivElement;
             const top = this.shadowRoot?.querySelector('.t') as HTMLDivElement;
-            if (this.axis === 'y') return {
+            if (this.axisVal === 'y') return {
                 vals: bottom,
                 vals_: top,
                 keys: left,
@@ -118,7 +118,7 @@ export const getPolar = (): any => {
         /**
          * Get chart config
          */
-        get config(): TPolarChartParams<TSeries> {
+        get configVal(): TPolarChartParams<TSeries> {
             return this._config;
         }
 
@@ -129,7 +129,7 @@ export const getPolar = (): any => {
         /**
          * Set chart config
          */
-        set config(value: TPolarChartParams<TSeries>) {
+        set configVal(value: TPolarChartParams<TSeries>) {
             this._config = {
                 ...DEF_CONFIG,
                 ...value,
@@ -149,7 +149,7 @@ export const getPolar = (): any => {
             value: Record<string, any>;
             activeSeries: string;
         }): string {
-            const { series } = this.config;
+            const { series } = this.configVal;
             const keys = activeSeries ? [activeSeries] : Object.keys(series);
             return `<div style="padding: 0.5rem;display:flex;flex-direction:column;gap: 0.5rem;">${keys.reduce((
                 acc, seriesKey
@@ -239,7 +239,7 @@ export const getPolar = (): any => {
                     `@scope (#tooltip) {:scope{transition-property:transform;transition-duration:200ms;transition-timing-function:linear;transition-delay:0ms;` +
                     `pointer-events:none;position: absolute;box-shadow: 0 0 0.5rem currentColor;` +
                     `width:max-content;margin:0;padding:0;border:0px;border-radius: 0.5rem;color: currentColor;` +
-                    `background:oklch(from light-dark(white, grey) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
+                    `background:oklch(from light-dark(white, #161618) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
                     styles.tooltip +
                     `}` +
                     this.getDataCSS()
@@ -250,7 +250,7 @@ export const getPolar = (): any => {
 
         render() {
             if (!this.isConnected || !this.svg) return;
-            const config = this.config;
+            const config = this.configVal;
             const styles = {
                 tooltip: ''
             };
@@ -269,7 +269,7 @@ export const getPolar = (): any => {
             const attr = this.getAttribute('config');
             const configVal = attr ? JSON.parse(decodeURIComponent(attr)) : {};
             this.setLayout();
-            this.config = configVal;
+            this.configVal = configVal;
             this.render();
             const tooltipOff = tooltipOn(this)
             const eventsOff = eventsOn(this);
@@ -289,7 +289,7 @@ export const getPolar = (): any => {
                 case 'config':
                     const attr = this.getAttribute('config');
                     const configVal = attr ? JSON.parse(decodeURIComponent(attr)) : {};
-                    this.config = configVal;
+                    this.configVal = configVal;
                     this.render();
                     break;
             }

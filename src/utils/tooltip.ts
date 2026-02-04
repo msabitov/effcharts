@@ -7,7 +7,7 @@ import { TTooltip } from '../types';
 export const tooltipOn = (container: HTMLElement & {
     tooltipTimerId?: number;
     svg: SVGElement, tooltip: HTMLDialogElement; root: HTMLDivElement;
-    config: {data: object[];tooltip?: TTooltip;series: Record<string, Record<string, any>>};
+    configVal: {data: object[];tooltip?: TTooltip;series: Record<string, Record<string, any>>};
     getActiveValue(params: {x: number; y: number}): number;
     getActiveSeries(): string;
     setActive(ind: number | null, series: string): void;
@@ -15,7 +15,7 @@ export const tooltipOn = (container: HTMLElement & {
 }) => {
     const handlers = {
         move: async (e: MouseEvent) => {
-            if (!container?.config?.tooltip) return;
+            if (!container?.configVal?.tooltip) return;
             const rect = container.svg.getBoundingClientRect();
             const tooltipOffsetAttr = container.getAttribute('tooltip-offset');
             const tooltipOffset = tooltipOffsetAttr ? tooltipOffsetAttr : '0.75rem';
@@ -37,14 +37,14 @@ export const tooltipOn = (container: HTMLElement & {
             if (activeValueIndex === -1) return;
             container.setActive(activeValueIndex, activeSeries);
             // есть фейковые записи - будет смещение
-            const value = container.config.data?.[activeValueIndex];
-            const tooltipByEvent: boolean = !!container?.config?.tooltip?.byEvent;
+            const value = container.configVal.data?.[activeValueIndex];
+            const tooltipByEvent: boolean = !!container?.configVal?.tooltip?.byEvent;
             const tooltipTemplate: string = !Object.keys(value).length ? '' : tooltipByEvent ? await new Promise((resolve) => {
                 container.dispatchEvent(new CustomEvent(container.tagName.toLowerCase(), {
                     bubbles: true,
                     detail:{
                         type: 'tooltip',
-                        series: container.config?.series,
+                        series: container.configVal?.series,
                         value,
                         activeValue: activeValueIndex,
                         activeSeries,
@@ -67,7 +67,7 @@ export const tooltipOn = (container: HTMLElement & {
             container.tooltipTimerId = setTimeout(() => {
                 container.tooltip?.close();
                 delete container.tooltipTimerId;
-            }, container.config?.tooltip?.delay ?? 500);
+            }, container.configVal?.tooltip?.delay ?? 500);
             container.setActive(null, '');
         },
         enter: () => {

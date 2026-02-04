@@ -162,8 +162,8 @@ export const useBar: TUseBar = () => {
         const Cartesian = getCartesian();
         custom.define(TAGNAME, class Bar extends Cartesian<TBarChartSeries> {
             getDataSVG() {
-                const axis = this.axis;
-                const config = this.config;
+                const axis = this.axisVal;
+                const config = this.configVal;
                 const extra = this.extra;
                 return makeBarPath({
                     config,
