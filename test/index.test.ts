@@ -7,7 +7,7 @@ const pieHandlers = usePie()
 const lineHandlers = useLine();
 const barHandlers = useBar()
 
-const PIE_DATA = pieHandlers.getConfig({
+const PIECHART_DATA = pieHandlers.getConfig({
     data: [
         {
             key: '1',
@@ -50,7 +50,7 @@ const PIE_DATA = pieHandlers.getConfig({
     }
 });
 
-const LINE_DATA = lineHandlers.getConfig({
+const LINECHART_DATA = lineHandlers.getConfig({
     data: [{
             name: '<b>Page A</b>',
             namealt: '<b>Pagaae A</b>',
@@ -132,7 +132,79 @@ const LINE_DATA = lineHandlers.getConfig({
     }
 });
 
-const BARCHART_PARAMS = {
+const LINECHART_DATA_STACKED = lineHandlers.getConfig({
+    data: [{
+            name: '<b>Page A</b>',
+            namealt: '<b>Pagaae A</b>',
+            uv: 4000,
+            y: 2400,
+            amt: 2400,
+            tooltip: '<p>Inline tooltip</p>'
+        },
+        {
+            name: 'Page B',
+            namealt: '<b>Pagaae A</b>',
+            uv: 3000,
+            y: 1398,
+            amt: 1510,
+        },
+        {
+            name: 'Page C',
+            namealt: '<b>Pagaae A</b>',
+            uv: 2000,
+            y: 9800,
+            amt: 2290,
+        },
+        {
+            name: 'Page D',
+            namealt: '<b>Pagaae A</b>',
+            uv: 2780,
+            y: 3908,
+            amt: 2000,
+        },
+        {
+            name: 'Page E',
+            namealt: '<b>Pagaae A</b>',
+            uv: 1890,
+            y: 4800,
+            amt: 2181,
+        },
+        {
+            name: 'Page F',
+            namealt: '<b>Pagaae A</b>',
+            uv: 2390,
+            y: 3800,
+            amt: 2500,
+        },
+        {
+            name: 'Page G',
+            namealt: '<b>Pagaae A</b>',
+            uv: 3490,
+            y: 4300,
+            amt: 2100,
+        }
+    ],
+    series: {
+        def: {
+            title: 'Base vals',
+            field: 'y',
+            color: 'green'
+        },
+        next: {
+            title: 'Next vals',
+            field: 'uv',
+            color: 'blue'
+        },
+        amt: {
+            title: 'Amt vals',
+            field: 'amt',
+            color: 'red'
+        }
+    },
+    stacked: true
+});
+
+const BARCHART_DATA = {
     data: [
         {
             name: 'Page A',
@@ -198,7 +270,7 @@ const BARCHART_PARAMS = {
     }
 };
 
-const BAR_PARAMS = barHandlers.getConfig(BARCHART_PARAMS);
+const BAR_PARAMS = barHandlers.getConfig(BARCHART_DATA);
 
 describe('EffCharts:', () => {
     let handlers = {};
@@ -206,14 +278,20 @@ describe('EffCharts:', () => {
         handlers = {};
         window.document.body.innerHTML = `
             <div>
-                <effcharts-pie data-id="pie" inner="0.5" style="width: 200px;" config="${PIE_DATA}"></effcharts-pie>
+                <effcharts-pie data-id="pie" inner="0.5" style="width: 200px;" config="${PIECHART_DATA}"></effcharts-pie>
 
-                <effcharts-pie data-id="pie" ratio="16/9" inner="0.5" style="width: 200px;" config="${PIE_DATA}"></effcharts-pie>
+                <effcharts-pie data-id="pie" ratio="16/9" inner="0.5" style="width: 200px;" config="${PIECHART_DATA}"></effcharts-pie>
 
-                <effcharts-line ratio="16/9" style="width: 600px;border:2px solid red;" config="${LINE_DATA}">
+                <effcharts-line ratio="16/9" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA}">
                 </effcharts-line>
 
-                <effcharts-line ratio="9/16" axis="y" style="width: 600px;border:2px solid red;" config="${LINE_DATA}">
+                <effcharts-line ratio="9/16" axis="y" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA}">
+                </effcharts-line>
+
+                <effcharts-line ratio="16/9" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA_STACKED}">
+                </effcharts-line>
+
+                <effcharts-line ratio="9/16" axis="y" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA_STACKED}">
                 </effcharts-line>
 
                 <effcharts-bar ratio="2" style="width: 600px;border:2px solid cyan;" config="${BAR_PARAMS}">

@@ -92,7 +92,9 @@ export const getCartesianExtraConfig = ({
         maxY: number;
     };
 }): TCartesianExtraConfig => {
-    const {data, grid = {}, precision = 4, levels} = config;
+    const {data, grid = {}, precision = 4, levels, stacked} = config;
+    let defStack = '';
+    if (stacked) defStack = 'default';
     const limits: Record<string, {max: number[]; min: number[];}> = {
         '': {
             max: Array.from({length: data.length}, () => 0),
@@ -117,7 +119,7 @@ export const getCartesianExtraConfig = ({
         ind: {}
     };
     const values: [string, number[]][] = Object.entries(config.series).map(([seriesKey, series]) => {
-        const {field = 'key', stack = ''} = series;
+        const {field = 'key', stack = defStack} = series;
         if (stack) {
             if (!limits[stack]) limits[stack] = {
                 max: Array.from({length: data.length}, () => 0),

@@ -134,6 +134,7 @@ function makeLinePath({
     viewBox: TViewBox;
 }): string {
     const  {
+        data,
         series,
     } = config;
     const {
@@ -142,6 +143,7 @@ function makeLinePath({
         zero
     } = extra;
     let res = stacks.reduce((acc, [stackName, stackKeys], stackInd) => {
+        let prevVals = Array.from({length: data.length}, () => zero);
         const seriesSVG: string[] = [];
         stackKeys.forEach((seriesKey, seriesInd) => {
             const config = series[seriesKey];
@@ -153,38 +155,54 @@ function makeLinePath({
                 area = {},
                 marker = {}
             } = config;
-            const points = norm[seriesKey];
+            const rawPoints = norm[seriesKey];
             let items: string[] = [];
-            let limY = viewBox.maxY;
-            let limX = viewBox.maxX;
+            
+            let points: {
+                x: number;
+                y: number;
+            }[] = rawPoints;
+            let limPoints: {
+                x: number;
+                y: number;
+            }[] = [];
             if (area) {
                 if (axis === 'y') {
-                    if (area?.towards === 'max') limX = viewBox.maxX;
-                    else if (area?.towards === 'zero') limX = zero;
-                    else limX = 0;
+                    if (stackName) {
+                        limPoints = points.map((val, ind) => ({...val, x: prevVals[ind]}));
+                        points = rawPoints.map((val, ind) => {
+                            const nextVal = prevVals[ind] + (val.x - zero);
+                            prevVals[ind] = nextVal;
+                            return {...val, x: nextVal};
+                        });
+                    } else if (area?.towards === 'max') limPoints = points.map((val) => ({...val, x: viewBox.maxX}));
+                    else if (area?.towards === 'zero') limPoints = points.map((val) => ({...val, x: zero}));
+                    else limPoints = points.map((val) => ({...val, x: 0}));
                 } else {
-                    if (area?.towards === 'max') limY = 0;
-                    else if (area?.towards === 'zero') limY = zero;
-                    else limY = viewBox.maxY;
+                    if (stackName) {
+                        limPoints = points.map((val, ind) => ({...val, y: prevVals[ind]}));
+                        points = rawPoints.map((val, ind) => {
+                            const nextVal = prevVals[ind] + (val.y - zero);
+                            prevVals[ind] = nextVal;
+                            return {...val, y: nextVal};
+                        });
+                    } else if (area?.towards === 'max') limPoints = points.map((val) => ({...val, y: 0}));
+                    else if (area?.towards === 'zero') limPoints = points.map((val) => ({...val, y: zero}));
+                    else limPoints = points.map((val) => ({...val, y: viewBox.maxY}));
                 }
             }
 
             if (smooth) {
-                const path = getSplinePath(points);
                 items.push(getSpline({
                     color,
                     width,
                     dasharray,
-                    path,
                     points
                 }));
                 if (area) items.push(getSplineArea({
                     color,
-                    path,
                     points,
-                    limY,
-                    limX,
-                    axis,
+                    limPoints,
                     ...area
                 }));
             } else {
@@ -197,9 +215,7 @@ function makeLinePath({
                 if (area) items.push(getPolylineArea({
                     color,
                     points,
-                    limY,
-                    limX,
-                    axis,
+                    limPoints,
                     ...area
                 }));
             }

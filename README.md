@@ -47,7 +47,7 @@ yarn add effcharts
 
 In short each web component should be defined before use. Every module in this library provides such a function
 -    `usePie` from `effcharts/pie` allows to use pie and donut charts;
--    `useLine` from `effcharts/line` allows to use line and area charts;
+-    `useLine` from `effcharts/line` allows to use line and area charts (that can be grouped into a single stack);
 -    `useBar` from `effcharts/bar` allows to use bar charts (also stacked bar charts).
 
 Each function returns object with `getConfig`, `observe` and `unobserve` handlers to control components behavior.

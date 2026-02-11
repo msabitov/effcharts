@@ -116,7 +116,7 @@ const makeBarPath = (params: {
         const prevDown = Array.from({length: data.length}, () => zero);
         const seriesSVG: string[] = [];
         const sz = 0.5 * step / (3 * stackCount);
-        const offset = -0.25 * step + stackInd * 3 * sz;
+        const offset = -0.25 * step + stackInd * 3 * sz + 0.5 * sz;
         stackKeys.forEach((seriesKey, seriesInd) => {
             const config = series[seriesKey];
             const points = norm[seriesKey];

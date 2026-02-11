@@ -114,6 +114,10 @@ export type TCartesianChartParams<TSeries> = {
      */
     precision?: number;
     /**
+     * Is all series stacked
+     */
+    stacked?: boolean;
+    /**
      * Value levels or count
      * @description
      * Can be used for grid or labels
@@ -248,5 +252,4 @@ export type TCartesianExtraConfig = {
      * Normalized series points
      */
     norm: Record<string, {x: number;y: number}[]>;
-
 }

@@ -83,24 +83,20 @@ export const getSpline = ({
  */
 export const getSplineArea = ({
     points,
-    limX,
-    limY,
-    path,
+    limPoints,
     color,
-    opacity,
-    axis
+    opacity
 }: {
     points: TPoint[];
-    limX: number;
-    limY: number;
+    limPoints: TPoint[];
     path?: string;
     color?: string;
     opacity?: string | number;
-    axis?: 'x' | 'y';
 }) => {
-    const d = path || getSplinePath(points);
-    if (axis === 'y') return `<path class="line-area" d="${`M ${limX},${limY} L ` + points[0].x + "," + points[0].y + " " + d + ` L ${limX} 0 Z`}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"></path>`;
-    return `<path class="line-area" d="${`M 0,${limY} L ` + points[0].x + "," + points[0].y + " " + d + ` L ${limX} ${limY} Z`}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"></path>`;
+    const d = getSplinePath(points);
+    const rev = limPoints.toReversed();
+    const dLim = getSplinePath(rev);
+    return `<path class="line-area" d="${`M ${points[0].x},${points[0].y} ` + d + ` L ${rev[0].x} ${rev[0].y} ` + dLim + `L ${points[0].x} ${points[0].y} Z`}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"></path>`;
 }
 /**
  * Get polyline figure
@@ -120,19 +116,14 @@ export const getPolyline = ({
  */
 export const getPolylineArea = ({
     points,
-    limX,
-    limY,
+    limPoints,
     color,
-    opacity,
-    axis
+    opacity
 }: {
     points: TPoint[];
-    limX: number;
-    limY: number;
+    limPoints: TPoint[];
     color?: string;
     opacity?: string | number;
-    axis?: 'x' | 'y';
 }) => {
-    if (axis === 'y') return `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(' ')} ${limX},0 ${limX},${limY}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"/>`;
-    return `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(' ')} ${limX},${limY} 0,${limY}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"/>`;
+    return `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(' ')} ${limPoints.toReversed().map((point) => `${point.x},${point.y}`).join(' ')}" opacity="${opacity ?? 0.2}" fill="${color ?? 'black'}" stroke="none" stroke-width="0"/>`;
 }
