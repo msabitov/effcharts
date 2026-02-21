@@ -600,7 +600,8 @@ export const getCartesian = (): any => {
             activeSeries: string;
         }): string {
             const { series } = this.configVal;
-            const keys = activeSeries ? [activeSeries] : Object.keys(series);
+            let keys = activeSeries ? [activeSeries] : Object.keys(series);
+            if (this.configVal.stacked) keys = keys.reverse();
             return `<div style="padding: 0.5rem;display:flex;flex-direction:column;gap: 0.5rem;">${keys.reduce((
                 acc, seriesKey
             ) => {
@@ -692,9 +693,9 @@ export const getCartesian = (): any => {
             let valsHTML = '';
             if (axis === 'y') {
                 if (vals) valsHTML = `<div style='width:calc(100cqw * ${(1 + 1 / (vals.length - 1)).toFixed(4)});grid-template-columns: repeat(${vals.length}, 1fr);display: grid;'>${vals.map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
-                if (keys) keysHTML =  `<div style='height:calc(100% * ${(1 + 1 / (keys.length - 1)).toFixed(4)});display: grid;grid-template-rows: repeat(${keys.length}, 1fr);'>${keys.toReversed().map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
+                if (keys) keysHTML =  `<div class='key-labels' style='height:calc(100% * ${(1 + 1 / (keys.length - 1)).toFixed(4)});display: grid;grid-template-rows: repeat(${keys.length}, 1fr);'>${keys.toReversed().map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
             } else {
-                if (keys) keysHTML = `<div style='width:calc(100cqw * ${(1 + 1 / (keys.length - 1)).toFixed(4)});grid-template-columns: repeat(${keys.length}, 1fr);display: grid;'>${keys.map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
+                if (keys) keysHTML = `<div class='key-labels' style='width:calc(100cqw * ${(1 + 1 / (keys.length - 1)).toFixed(4)});grid-template-columns: repeat(${keys.length}, 1fr);display: grid;'>${keys.map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
                 if (vals) valsHTML = `<div style='height:calc(100% * ${(1 + 1 / (vals.length - 1)).toFixed(4)});display: grid;grid-template-rows: repeat(${vals.length}, 1fr);'>${vals.toReversed().map((i) => `<div class='label'>${i ?? ''}</div>`).join('')}</div>`;
             }
             return {
@@ -745,6 +746,7 @@ export const getCartesian = (): any => {
         setCSS(styles: {
             tooltip: string;
             highlight: string;
+            labels: string;
             minSize: {l?: string;r?:string;t?:string;b?:string}
         }): void {
             if (this.shadowRoot) {
@@ -757,7 +759,7 @@ export const getCartesian = (): any => {
                     `width:max-content;margin:0;padding:0;border:0px;border-radius: 0.5rem;color: currentColor;` +
                     `background:oklch(from light-dark(white, #161618) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
                     styles.tooltip +
-                    `}` +
+                    `}` + (styles.labels ? `@scope (.key-labels > .label) {${styles.labels}}` : '') +
                     `@scope (#highlight) {[data-index] {fill: transparent;stroke: none;z-index: 100;}` +
                     `:scope:has([data-active]) [data-index]:not([data-active]){fill: oklch(from currentColor l c h / 0.1);}` +
                     styles.highlight +
@@ -777,7 +779,8 @@ export const getCartesian = (): any => {
             const styles = {
                 highlight: '',
                 tooltip: '',
-                minSize: config.minSize || {}
+                minSize: config.minSize || {},
+                labels: config?.labels?.css || ''
             };
             if (config.highlight) {
                 this.svgHighlight.innerHTML = getHighlightSVG({

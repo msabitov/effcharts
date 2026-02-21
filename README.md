@@ -27,6 +27,7 @@ EffCharts is a self-confident 2D charts library based on Web Components
 -   [Docs](https://effnd.tech/charts/)
 -   [SourceCraft](https://sourcecraft.dev/msabitov/effcharts)
 -   [GitHub](https://github.com/msabitov/effcharts)
+-   [GitFlic](https://gitflic.ru/project/msabitov/effcharts)
 
 ## Installation
 

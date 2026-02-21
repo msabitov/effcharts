@@ -1,4 +1,5 @@
-import { beforeAll, describe, test } from 'vitest';
+import { beforeAll, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { usePie } from '../src/pie';
 import { useLine } from '../src/line';
 import { useBar } from '../src/bar';
@@ -47,6 +48,9 @@ const PIECHART_DATA = pieHandlers.getConfig({
             outer: 0.5,
             angle: 180
         }
+    },
+    tooltip: {
+        offset: '5px'
     }
 });
 
@@ -249,7 +253,7 @@ const BARCHART_DATA = {
             amt: -2100,
         },
     ],
-    series: { // массив - это стек
+    series: {
         def: {
             title: 'Default',
             field: 'uv',
@@ -267,45 +271,132 @@ const BARCHART_DATA = {
             field: 'amt',
             color: 'red'
         }
+    },
+    labels: {
+        css: ':scope{color: green;font-weight:bold;}'
     }
 };
 
 const BAR_PARAMS = barHandlers.getConfig(BARCHART_DATA);
+
+const IDS = {
+    pieBase: 'pie-base',
+    pieWithRatio: 'pie-with-ratio',
+    lineX: 'line-x',
+    lineY: 'line-y',
+    lineXStacked: 'line-x-stacked',
+    lineYStacked: 'line-y-stacked',
+    barX: 'bar-x',
+    barY: 'bar-y'
+}
 
 describe('EffCharts:', () => {
     let handlers = {};
     beforeAll(() => {
         handlers = {};
         window.document.body.innerHTML = `
-            <div>
-                <effcharts-pie data-id="pie" inner="0.5" style="width: 200px;" config="${PIECHART_DATA}"></effcharts-pie>
+            <style>
+                :root {
+                    font-size: 10px;
+                }
+            </style>
+            <div style="display:flex;flex-direction:column;gap: 10px;">
+                <effcharts-pie data-testid="${IDS.pieBase}" inner="0.5" config="${PIECHART_DATA}" style="border:2px solid black;"></effcharts-pie>
 
-                <effcharts-pie data-id="pie" ratio="16/9" inner="0.5" style="width: 200px;" config="${PIECHART_DATA}"></effcharts-pie>
+                <effcharts-pie data-testid="${IDS.pieWithRatio}" ratio="16/9" inner="0.5" config="${PIECHART_DATA}" style="border:2px solid black;"></effcharts-pie>
 
-                <effcharts-line ratio="16/9" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA}">
+                <effcharts-line data-testid="${IDS.lineX}" ratio="16/9" style="border:2px solid black;" config="${LINECHART_DATA}">
                 </effcharts-line>
 
-                <effcharts-line ratio="9/16" axis="y" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA}">
+                <effcharts-line data-testid="${IDS.lineY}" ratio="9/16" axis="y" style="border:2px solid black;" config="${LINECHART_DATA}">
                 </effcharts-line>
 
-                <effcharts-line ratio="16/9" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA_STACKED}">
+                <effcharts-line data-testid="${IDS.lineXStacked}" ratio="16/9" style="border:2px solid black;" config="${LINECHART_DATA_STACKED}">
                 </effcharts-line>
 
-                <effcharts-line ratio="9/16" axis="y" style="width: 600px;border:2px solid red;" config="${LINECHART_DATA_STACKED}">
+                <effcharts-line data-testid="${IDS.lineYStacked}" ratio="9/16" axis="y" style="border:2px solid black;" config="${LINECHART_DATA_STACKED}">
                 </effcharts-line>
 
-                <effcharts-bar ratio="2" style="width: 600px;border:2px solid cyan;" config="${BAR_PARAMS}">
+                <effcharts-bar data-testid="${IDS.barX}" ratio="2" style="border:2px solid black;" config="${BAR_PARAMS}">
                 </effcharts-bar>
 
-                <effcharts-bar ratio="2" axis="y" style="width: 600px;border:2px solid cyan;" config="${BAR_PARAMS}">
+                <effcharts-bar data-testid="${IDS.barY}" ratio="2" axis="y" style="border:2px solid black;" config="${BAR_PARAMS}">
                 </effcharts-bar>
             </div>
         `;
     });
 
     describe('effcharts base:', () => {
-        test('fdir=c axis:', async () => {
-            // TODO
+        test(`screenshot ${IDS.pieBase}:`, async () => {
+            await expect.element(page.getByTestId(IDS.pieBase)).toMatchScreenshot(IDS.pieBase, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.pieWithRatio}:`, async () => {
+            await expect.element(page.getByTestId(IDS.pieWithRatio)).toMatchScreenshot(IDS.pieWithRatio, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.lineX}:`, async () => {
+            await expect.element(page.getByTestId(IDS.lineX)).toMatchScreenshot(IDS.lineX, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.lineY}:`, async () => {
+            await expect.element(page.getByTestId(IDS.lineY)).toMatchScreenshot(IDS.lineY, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.lineXStacked}:`, async () => {
+            await expect.element(page.getByTestId(IDS.lineXStacked)).toMatchScreenshot(IDS.lineXStacked, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.lineYStacked}:`, async () => {
+            await expect.element(page.getByTestId(IDS.lineYStacked)).toMatchScreenshot(IDS.lineYStacked, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.barX}:`, async () => {
+            await expect.element(page.getByTestId(IDS.barX)).toMatchScreenshot(IDS.barX, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
+        });
+
+        test(`screenshot ${IDS.barY}:`, async () => {
+            await expect.element(page.getByTestId(IDS.barY)).toMatchScreenshot(IDS.barY, {
+                comparatorName: 'pixelmatch',
+                comparatorOptions: {
+                    allowedMismatchedPixelRatio: 0.01,
+                },
+            })
         });
     });
 });

@@ -1,7 +1,6 @@
 /**
  * Tooltip handlers
  */
-
 import { TTooltip } from '../types';
 
 export const tooltipOn = (container: HTMLElement & {
@@ -17,8 +16,7 @@ export const tooltipOn = (container: HTMLElement & {
         move: async (e: MouseEvent) => {
             if (!container?.configVal?.tooltip) return;
             const rect = container.svg.getBoundingClientRect();
-            const tooltipOffsetAttr = container.getAttribute('tooltip-offset');
-            const tooltipOffset = tooltipOffsetAttr ? tooltipOffsetAttr : '0.75rem';
+            const tooltipOffset = container.configVal.tooltip.offset || '0.75rem';
             const x = e.clientX;
             const y = e.clientY;
             let transformX = tooltipOffset;
@@ -30,13 +28,12 @@ export const tooltipOn = (container: HTMLElement & {
                 transformY = `calc(-${tooltipOffset} - 100%)`;
             }
             container.tooltip?.style.setProperty('left', x - rect.left + 'px');
-            container.tooltip?.style.setProperty('top', y  - rect.top + 'px');
+            container.tooltip?.style.setProperty('top', y - rect.top + 'px');
             container.tooltip?.style.setProperty('transform', `translate(${transformX}, ${transformY})`);
             let activeValueIndex = container.getActiveValue({x, y});
             const activeSeries = container.getActiveSeries();
             if (activeValueIndex === -1) return;
             container.setActive(activeValueIndex, activeSeries);
-            // есть фейковые записи - будет смещение
             const value = container.configVal.data?.[activeValueIndex];
             const tooltipByEvent: boolean = !!container?.configVal?.tooltip?.byEvent;
             const tooltipTemplate: string = !Object.keys(value).length ? '' : tooltipByEvent ? await new Promise((resolve) => {

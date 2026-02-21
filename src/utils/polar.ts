@@ -236,9 +236,10 @@ export const getPolar = (): any => {
                 staticCSS.replaceSync(STATIC_CSS);
                 const dynamicCSS = new CSSStyleSheet();
                 dynamicCSS.replaceSync(
+                    `:host{aspect-ratio: ${this.getAttribute('ratio') || 1};}` +
                     `@scope (#tooltip) {:scope{transition-property:transform;transition-duration:200ms;transition-timing-function:linear;transition-delay:0ms;` +
                     `pointer-events:none;position: absolute;box-shadow: 0 0 0.5rem currentColor;` +
-                    `width:max-content;margin:0;padding:0;border:0px;border-radius: 0.5rem;color: currentColor;` +
+                    `box-sizing:border-box;width:max-content;margin:0;padding:0;border:0px;border-radius: 0.5rem;color: currentColor;` +
                     `background:oklch(from light-dark(white, #161618) l c h / 0.9);}&:focus,&:focus-visible {border:none;outline:none;}` +
                     styles.tooltip +
                     `}` +
